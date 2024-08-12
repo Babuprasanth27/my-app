@@ -1,0 +1,21 @@
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+/* Custom hover effect for links */
+.hover-link::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background-color: #4f46e5; /* Tailwind's indigo-800 */
+  transition: width 0.3s ease-in-out;
+}
+
+.hover-link:hover::after {
+  width: 100%;
+}
