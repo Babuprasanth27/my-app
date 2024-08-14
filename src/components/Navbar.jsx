@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { UserContext } from './UserContext'; // Import the UserContext
+import { UserContext } from './UserContext';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -29,7 +29,7 @@ function Navbar() {
   const [anchorElUser, setAnchorElUser] = React.useState(null);
   const [scrolled, setScrolled] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
-  const { user, loggedIn, logout } = useContext(UserContext); // Use the context
+  const { user, loggedIn, logout } = useContext(UserContext); 
   const navigate = useNavigate();
 
   React.useEffect(() => {

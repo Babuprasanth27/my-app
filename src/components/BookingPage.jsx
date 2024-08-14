@@ -180,7 +180,7 @@ const SummaryPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 flex flex-col">
+    <div className="min-h-screen bg-gray-100 flex flex-col mt-10">
       <motion.div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-md p-4" initial={{ y: -50 }} animate={{ y: 0 }}>
         <div className="flex items-center">
           <button className="text-white focus:outline-none">
@@ -190,7 +190,7 @@ const SummaryPage = () => {
         </div>
       </motion.div>
 
-      <div className="flex-grow p-6">
+      <div className="flex-grow p-6 ">
         <motion.div className="bg-white shadow-lg rounded-lg p-6 space-y-6" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
           <div className="flex justify-between items-center border-b pb-2">
             <div className="flex items-center text-gray-600">

@@ -380,76 +380,25 @@
 // }
 
 // export default EmployeeRegistrationModal;
-
-
 import React, { useState } from 'react';
 import axios from 'axios';
 import { Dialog } from '@headlessui/react';
 import { FiX } from 'react-icons/fi';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useUser } from './UserContext'; // Ensure this path is correct
+import { useUser } from './UserContext';
+import { useSnackbar } from 'notistack';
 
 function EmployeeRegistrationModal({ isOpen, setIsOpen }) {
   const [serviceType, setServiceType] = useState('');
-  const [cookPreferences, setCookPreferences] = useState([]);
-  const [cleaningPreferences, setCleaningPreferences] = useState([]);
-  const [housekeepingPreferences, setHousekeepingPreferences] = useState([]);
-  const [otherCookPreference, setOtherCookPreference] = useState('');
-  const [otherCleaningPreference, setOtherCleaningPreference] = useState('');
-  const [otherHousekeepingPreference, setOtherHousekeepingPreference] = useState('');
+  const [specialty, setSpecialty] = useState('');
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [location, setLocation] = useState('');
-  const { user } = useUser(); // Access user information from context
+  const { user } = useUser();
+  const { enqueueSnackbar } = useSnackbar();
 
   const closeModal = () => {
     setIsOpen(false);
-  };
-
-  const handleServiceTypeChange = (e) => {
-    setServiceType(e.target.value);
-  };
-
-  const handleCookPreferencesChange = (e) => {
-    const { value, checked } = e.target;
-    if (value === 'other') {
-      setOtherCookPreference(''); // Reset the "Other" preference text box
-    }
-    setCookPreferences((prev) =>
-      checked ? [...prev, value] : prev.filter((pref) => pref !== value)
-    );
-  };
-
-  const handleCleaningPreferencesChange = (e) => {
-    const { value, checked } = e.target;
-    if (value === 'other') {
-      setOtherCleaningPreference(''); // Reset the "Other" preference text box
-    }
-    setCleaningPreferences((prev) =>
-      checked ? [...prev, value] : prev.filter((pref) => pref !== value)
-    );
-  };
-
-  const handleHousekeepingPreferencesChange = (e) => {
-    const { value, checked } = e.target;
-    if (value === 'other') {
-      setOtherHousekeepingPreference(''); // Reset the "Other" preference text box
-    }
-    setHousekeepingPreferences((prev) =>
-      checked ? [...prev, value] : prev.filter((pref) => pref !== value)
-    );
-  };
-
-  const handleOtherCookPreferenceChange = (e) => {
-    setOtherCookPreference(e.target.value);
-  };
-
-  const handleOtherCleaningPreferenceChange = (e) => {
-    setOtherCleaningPreference(e.target.value);
-  };
-
-  const handleOtherHousekeepingPreferenceChange = (e) => {
-    setOtherHousekeepingPreference(e.target.value);
   };
 
   const handleSubmit = async (e) => {
@@ -461,21 +410,18 @@ function EmployeeRegistrationModal({ isOpen, setIsOpen }) {
       phone,
       location,
       serviceType,
-      cookPreferences: serviceType === 'cook' ? [...cookPreferences, otherCookPreference].filter(Boolean) : [],
-      cleaningPreferences: serviceType === 'cleaning' ? [...cleaningPreferences, otherCleaningPreference].filter(Boolean) : [],
-      housekeepingPreferences: serviceType === 'housekeeping' ? [...housekeepingPreferences, otherHousekeepingPreference].filter(Boolean) : [],
+      specialty,
     };
 
     try {
       const response = await axios.post('http://localhost:8080/api/employees', formData);
       console.log('Response:', response.data);
-      alert('Employee registration successful!');
+      enqueueSnackbar('Employee registration successful!', { variant: 'success' });
       setIsOpen(false);
     } catch (error) {
       console.error('Error submitting form:', error.response ? error.response.data : error.message);
-      alert('There was an error submitting the form.');
+      enqueueSnackbar('There was an error submitting the form.', { variant: 'error' });
     }
-    
   };
 
   return (
@@ -506,7 +452,6 @@ function EmployeeRegistrationModal({ isOpen, setIsOpen }) {
                 </button>
               </div>
               <form onSubmit={handleSubmit} className="mt-6 space-y-6">
-                {/* Name Field */}
                 <div>
                   <label htmlFor="name" className="block text-sm font-medium text-gray-700">
                     Name
@@ -521,7 +466,6 @@ function EmployeeRegistrationModal({ isOpen, setIsOpen }) {
                   />
                 </div>
 
-                {/* Email Field */}
                 <div>
                   <label htmlFor="email" className="block text-sm font-medium text-gray-700">
                     Email
@@ -536,7 +480,6 @@ function EmployeeRegistrationModal({ isOpen, setIsOpen }) {
                   />
                 </div>
 
-                {/* Phone Number Field */}
                 <div>
                   <label htmlFor="phone" className="block text-sm font-medium text-gray-700">
                     Phone Number
@@ -551,7 +494,6 @@ function EmployeeRegistrationModal({ isOpen, setIsOpen }) {
                   />
                 </div>
 
-                {/* Location Field */}
                 <div>
                   <label htmlFor="location" className="block text-sm font-medium text-gray-700">
                     Location
@@ -566,224 +508,34 @@ function EmployeeRegistrationModal({ isOpen, setIsOpen }) {
                   />
                 </div>
 
-                {/* Service Type Field */}
                 <div>
                   <label htmlFor="serviceType" className="block text-sm font-medium text-gray-700">
                     Service Type
                   </label>
-                  <select
+                  <input
+                    type="text"
                     id="serviceType"
                     name="serviceType"
                     value={serviceType}
-                    onChange={handleServiceTypeChange}
-                    className="mt-1 block w-full rounded-md border border-gray-300 bg-white text-gray-800 shadow-sm focus:border-gray-500 focus:ring-gray-500 sm:text-sm px-4 py-2"
-                  >
-                    <option value="">Select Service Type</option>
-                    <option value="cook">Cook</option>
-                    <option value="cleaning">Cleaning</option>
-                    <option value="housekeeping">Housekeeping</option>
-                    <option value="other">Other</option>
-                  </select>
+                    onChange={(e) => setServiceType(e.target.value)}
+                    className="mt-1 block w-full rounded-md border border-gray-300 bg-gray-100 text-gray-800 placeholder-gray-500 shadow-sm focus:border-gray-500 focus:ring-gray-500 sm:text-sm px-4 py-2"
+                  />
                 </div>
 
-                {/* TextBox for Other Service Type */}
-                {serviceType === 'other' && (
-                  <div>
-                    <label htmlFor="otherServiceType" className="block text-sm font-medium text-gray-700">
-                      Please specify the service
-                    </label>
-                    <input
-                      type="text"
-                      id="otherServiceType"
-                      name="otherServiceType"
-                      value={serviceType}
-                      onChange={(e) => setServiceType(e.target.value)}
-                      className="mt-1 block w-full rounded-md border border-gray-300 bg-gray-100 text-gray-800 placeholder-gray-500 shadow-sm focus:border-gray-500 focus:ring-gray-500 sm:text-sm px-4 py-2"
-                    />
-                  </div>
-                )}
+                <div>
+                  <label htmlFor="specialty" className="block text-sm font-medium text-gray-700">
+                    Area of Expertise
+                  </label>
+                  <input
+                    type="text"
+                    id="specialty"
+                    name="specialty"
+                    value={specialty}
+                    onChange={(e) => setSpecialty(e.target.value)}
+                    className="mt-1 block w-full rounded-md border border-gray-300 bg-gray-100 text-gray-800 placeholder-gray-500 shadow-sm focus:border-gray-500 focus:ring-gray-500 sm:text-sm px-4 py-2"
+                  />
+                </div>
 
-                {/* Preferences for Cook */}
-                {serviceType === 'cook' && (
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">
-                      Cook Preferences
-                    </label>
-                    <div className="mt-2">
-                      <label className="inline-flex items-center">
-                        <input
-                          type="checkbox"
-                          value="Indian"
-                          checked={cookPreferences.includes('Indian')}
-                          onChange={handleCookPreferencesChange}
-                          className="form-checkbox"
-                        />
-                        <span className="ml-2">Indian</span>
-                      </label>
-                      <label className="inline-flex items-center ml-4">
-                        <input
-                          type="checkbox"
-                          value="Continental"
-                          checked={cookPreferences.includes('Continental')}
-                          onChange={handleCookPreferencesChange}
-                          className="form-checkbox"
-                        />
-                        <span className="ml-2">Continental</span>
-                      </label>
-                      <label className="inline-flex items-center ml-4">
-                        <input
-                          type="checkbox"
-                          value="Chinese"
-                          checked={cookPreferences.includes('Chinese')}
-                          onChange={handleCookPreferencesChange}
-                          className="form-checkbox"
-                        />
-                        <span className="ml-2">Chinese</span>
-                      </label>
-                      <label className="inline-flex items-center ml-4">
-                        <input
-                          type="checkbox"
-                          value="other"
-                          checked={cookPreferences.includes('other')}
-                          onChange={handleCookPreferencesChange}
-                          className="form-checkbox"
-                        />
-                        <span className="ml-2">Other</span>
-                      </label>
-                      {cookPreferences.includes('other') && (
-                        <input
-                          type="text"
-                          value={otherCookPreference}
-                          onChange={handleOtherCookPreferenceChange}
-                          placeholder="Specify other preference"
-                          className="mt-2 block w-full rounded-md border border-gray-300 bg-gray-100 text-gray-800 placeholder-gray-500 shadow-sm focus:border-gray-500 focus:ring-gray-500 sm:text-sm px-4 py-2"
-                        />
-                      )}
-                    </div>
-                  </div>
-                )}
-
-                {/* Preferences for Cleaning */}
-                {serviceType === 'cleaning' && (
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">
-                      Cleaning Preferences
-                    </label>
-                    <div className="mt-2">
-                      <label className="inline-flex items-center">
-                        <input
-                          type="checkbox"
-                          value="Daily"
-                          checked={cleaningPreferences.includes('Daily')}
-                          onChange={handleCleaningPreferencesChange}
-                          className="form-checkbox"
-                        />
-                        <span className="ml-2">Daily</span>
-                      </label>
-                      <label className="inline-flex items-center ml-4">
-                        <input
-                          type="checkbox"
-                          value="Weekly"
-                          checked={cleaningPreferences.includes('Weekly')}
-                          onChange={handleCleaningPreferencesChange}
-                          className="form-checkbox"
-                        />
-                        <span className="ml-2">Weekly</span>
-                      </label>
-                      <label className="inline-flex items-center ml-4">
-                        <input
-                          type="checkbox"
-                          value="Monthly"
-                          checked={cleaningPreferences.includes('Monthly')}
-                          onChange={handleCleaningPreferencesChange}
-                          className="form-checkbox"
-                        />
-                        <span className="ml-2">Monthly</span>
-                      </label>
-                      <label className="inline-flex items-center ml-4">
-                        <input
-                          type="checkbox"
-                          value="other"
-                          checked={cleaningPreferences.includes('other')}
-                          onChange={handleCleaningPreferencesChange}
-                          className="form-checkbox"
-                        />
-                        <span className="ml-2">Other</span>
-                      </label>
-                      {cleaningPreferences.includes('other') && (
-                        <input
-                          type="text"
-                          value={otherCleaningPreference}
-                          onChange={handleOtherCleaningPreferenceChange}
-                          placeholder="Specify other preference"
-                          className="mt-2 block w-full rounded-md border border-gray-300 bg-gray-100 text-gray-800 placeholder-gray-500 shadow-sm focus:border-gray-500 focus:ring-gray-500 sm:text-sm px-4 py-2"
-                        />
-                      )}
-                    </div>
-                  </div>
-                )}
-
-                {/* Preferences for Housekeeping */}
-                {serviceType === 'housekeeping' && (
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">
-                      Housekeeping Preferences
-                    </label>
-                    <div className="mt-2">
-                      <label className="inline-flex items-center">
-                        <input
-                          type="checkbox"
-                          value="Light"
-                          checked={housekeepingPreferences.includes('Light')}
-                          onChange={handleHousekeepingPreferencesChange}
-                          className="form-checkbox"
-                        />
-                        <span className="ml-2">Light</span>
-                      </label>
-                      <label className="inline-flex items-center ml-4">
-                        <input
-                          type="checkbox"
-                          value="Heavy"
-                          checked={housekeepingPreferences.includes('Heavy')}
-                          onChange={handleHousekeepingPreferencesChange}
-                          className="form-checkbox"
-                        />
-                        <span className="ml-2">Heavy</span>
-                      </label>
-                      <label className="inline-flex items-center ml-4">
-                        <input
-                          type="checkbox"
-                          value="Occasional"
-                          checked={housekeepingPreferences.includes('Occasional')}
-                          onChange={handleHousekeepingPreferencesChange}
-                          className="form-checkbox"
-                        />
-                        <span className="ml-2">Occasional</span>
-                      </label>
-                      <label className="inline-flex items-center ml-4">
-                        <input
-                          type="checkbox"
-                          value="other"
-                          checked={housekeepingPreferences.includes('other')}
-                          onChange={handleHousekeepingPreferencesChange}
-                          className="form-checkbox"
-                        />
-                        <span className="ml-2">Other</span>
-                      </label>
-                      {housekeepingPreferences.includes('other') && (
-                        <input
-                          type="text"
-                          value={otherHousekeepingPreference}
-                          onChange={handleOtherHousekeepingPreferenceChange}
-                          placeholder="Specify other preference"
-                          className="mt-2 block w-full rounded-md border border-gray-300 bg-gray-100 text-gray-800 placeholder-gray-500 shadow-sm focus:border-gray-500 focus:ring-gray-500 sm:text-sm px-4 py-2"
-                        />
-                      )}
-                    </div>
-                  </div>
-                )}
-
-                {/* Submit Button */}
                 <div className="flex justify-end">
                   <button
                     type="submit"

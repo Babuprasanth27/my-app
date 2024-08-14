@@ -49,10 +49,10 @@ const CategoriesAndServices = () => {
   useEffect(() => {
     const fetchUserEmail = async () => {
       try {
-        const response = await fetch('http://localhost:8080/api/user'); // Adjust the URL as needed
+        const response = await fetch('http://localhost:8080/api/user'); 
         if (response.ok) {
           const data = await response.json();
-          setUserEmail(data.email); // Assume the response contains the email field
+          setUserEmail(data.email); 
         } else {
           console.error('Failed to fetch user email');
         }

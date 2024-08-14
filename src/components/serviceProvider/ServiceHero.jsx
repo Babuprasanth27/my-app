@@ -23,7 +23,7 @@ const ServiceProviderHero = () => {
   };
 
   return (
-    <div className="relative bg-white overflow-hidden mt-5">
+    <div className="relative bg-white overflow-hidden mt-5 min-h-screen">
       <NavbarService />
       {loading && <LoadingIndicator />}
       

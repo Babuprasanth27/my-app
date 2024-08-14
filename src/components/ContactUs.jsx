@@ -1,13 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMapMarkerAlt, faPhone, faEnvelope } from '@fortawesome/free-solid-svg-icons';
-import { faFacebook, faTwitter, faInstagram, faWhatsapp } from '@fortawesome/free-brands-svg-icons';
+import axios  from 'axios';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
+import { useUser } from './UserContext'; 
+import { useSnackbar } from 'notistack'; 
 
 const ContactPage = () => {
-  const [formData, setFormData] = useState({ name: '', email: '', phone: '', message: '' });
+  const { user } = useUser(); 
+  const [formData, setFormData] = useState({ name: '', email: user.email, phone: '', message: '' });
   const [messageSent, setMessageSent] = useState(false);
+  const { enqueueSnackbar } = useSnackbar(); 
 
   useEffect(() => {
     AOS.init({ duration: 1000 });
@@ -17,12 +21,19 @@ const ContactPage = () => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
-
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setMessageSent(true);
+  
+    try {
+      await axios.post('http://localhost:8080/api/contact', formData); 
+      setFormData({ name: '', email: '', phone: '', message: '' }); 
+      enqueueSnackbar('Message sent successfully!', { variant: 'success' }); 
+    } catch (error) {
+      console.error('Error sending message:', error);
+      enqueueSnackbar('Failed to send message. Please try again.', { variant: 'error' }); // Show error notification
+    }
   };
-
+  
   return (
     <div className="container mx-auto p-6">
       <header className="text-center mb-8">

@@ -19,7 +19,7 @@ const HireModal = ({ service, onClose }) => {
   const { enqueueSnackbar } = useSnackbar();
   const { user } = useUser();
 
-  // Prepopulate email from UserContext
+ 
   useEffect(() => {
     if (user && user.email) {
       setEmail(user.email);
@@ -31,7 +31,7 @@ const HireModal = ({ service, onClose }) => {
   useEffect(() => {
     if (service) {
       setSelectedService({ value: service.name, label: service.name });
-      // Set preferences based on the selected service if needed
+      
     }
   }, [service]);
 

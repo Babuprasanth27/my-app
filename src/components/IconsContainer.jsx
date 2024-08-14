@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
-import AOS from 'aos'; // Import AOS
-import 'aos/dist/aos.css'; // Import AOS styles
+import AOS from 'aos'; 
+import 'aos/dist/aos.css';
 
 import img1 from '../asserts/img1.jpg';
 import img3 from '../asserts/img3.jpg';
@@ -34,14 +34,14 @@ const IconsContainer = () => {
   ];
 
   useEffect(() => {
-    AOS.init({ duration: 1000 }); // Initialize AOS
+    AOS.init({ duration: 1000 }); 
   }, []);
 
   return (
     <section className="icons-container my-8">
       <div className="container mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
         {icons.map((icon, index) => {
-          // Use useInView hook to animate elements when they come into view
+          
           const { ref, inView } = useInView({ triggerOnce: false, threshold: 0.1 });
 
           return (
@@ -52,7 +52,7 @@ const IconsContainer = () => {
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: inView ? 1 : 0, scale: inView ? 1 : 0.9 }}
               transition={{ duration: 0.5, ease: 'easeOut' }}
-              data-aos="fade-up" // AOS animation attribute
+              data-aos="fade-up" 
             >
               <div className="info text-center">
                 <img src={icon.src} alt={icon.title} className="w-16 h-16 mx-auto mb-4" />

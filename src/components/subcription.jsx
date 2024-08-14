@@ -87,7 +87,7 @@ const SubscriptionPlans = () => {
               <button
                 className={`w-full py-2.5 text-sm font-semibold text-white rounded-md ${plan.color === 'text-yellow-500' ? 'bg-yellow-500' : plan.color === 'text-green-500' ? 'bg-green-500' : 'bg-blue-500'} hover:opacity-90`}
               >
-                <Link to="/book" className='no-underline text-white'>Subscribe Now</Link>
+                <Link to="/payment" className='no-underline text-white'>Subscribe Now</Link>
               </button>
             </div>
           </div>
@@ -169,7 +169,7 @@ const SubscriptionPlans = () => {
         <h2 className="text-3xl font-bold mb-4">Ready to Get Started?</h2>
         <p className="text-xl mb-4">Subscribe now and enjoy our top-notch household services!</p>
         <button className="bg-white text-indigo-500 font-semibold py-2 px-8 rounded-lg hover:bg-gray-200">
-          Subscribe Now
+            <Link to="/payment" className='no-underline '>Subscribe Now</Link>
         </button>
       </div>
     </div>

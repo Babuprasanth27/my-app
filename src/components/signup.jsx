@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useUser } from './UserContext'; // Import the custom hook
+import { useUser } from './UserContext';
+import { useSnackbar } from 'notistack';
 
 function SignUp() {
   const [username, setUsername] = useState("");
@@ -10,7 +11,8 @@ function SignUp() {
   const [role, setRole] = useState("user");
   const [error, setError] = useState("");
   const navigate = useNavigate();
-  const { setUser } = useUser(); // Get the setUser function from context
+  const { setUser } = useUser();
+  const { enqueueSnackbar } = useSnackbar(); 
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -36,9 +38,11 @@ function SignUp() {
       });
 
       if (response.ok) {
-        // Update the context with user data
+       
         setUser({ email, username });
-        // Navigate based on role
+       
+        enqueueSnackbar('Signup successful!', { variant: 'success' });
+        
         if (role === 'user') {
           navigate("/");
         } else if (role === 'admin') {
@@ -47,9 +51,12 @@ function SignUp() {
       } else {
         const errorText = await response.text();
         setError(errorText);
+       
+        enqueueSnackbar(errorText, { variant: 'error' });
       }
     } catch (error) {
       setError("An error occurred. Please try again.");
+      enqueueSnackbar('An error occurred. Please try again.', { variant: 'error' });
       console.log(error);
     }
   };
